@@ -463,6 +463,18 @@
       transition: opacity 0.15s;
     }
     .admin-mode .btn-add { display: flex; }
+
+    /* Kéo thả sắp xếp */
+    .admin-mode .card { cursor: grab; }
+    .admin-mode .card:active { cursor: grabbing; }
+    .sortable-ghost {
+      opacity: 0.3;
+    }
+    .sortable-chosen {
+      box-shadow: 0 8px 28px rgba(0,0,0,0.15);
+      transform: scale(1.02);
+      z-index: 10;
+    }
     .btn-add:hover { opacity: 0.85; }
 
     /* Popup thông báo / xác nhận */
@@ -618,6 +630,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
 
 <script>
   firebase.initializeApp({
@@ -743,6 +756,7 @@
 
     grid.innerHTML = filtered.map(l => `
       <a class="card" href="${escHtml(fixUrl(l.url))}" target="_blank" rel="noopener"
+         data-id="${l.id}"
          style="--card-accent:${l.color}; --icon-bg:${getLightBg(l.color)};">
         <div class="card-icon">${iconSvg(l.icon)}</div>
         <div class="card-info">
@@ -756,6 +770,45 @@
         </div>
       </a>
     `).join('');
+    initSortable();
+  }
+
+  // --- Kéo thả sắp xếp (chỉ admin) ---
+  let sortableInstance = null;
+  function initSortable() {
+    if (sortableInstance) sortableInstance.destroy();
+    if (!isAdmin || typeof Sortable === 'undefined') return;
+    const grid = document.getElementById('grid');
+    sortableInstance = Sortable.create(grid, {
+      animation: 200,
+      ghostClass: 'sortable-ghost',
+      chosenClass: 'sortable-chosen',
+      filter: '.btn-edit, .btn-delete',
+      preventOnFilter: false,
+      onEnd: async function() {
+        const cards = grid.querySelectorAll('.card[data-id]');
+        const batch = db.batch();
+        let changed = false;
+        cards.forEach((card, i) => {
+          const id = card.dataset.id;
+          if (id.startsWith('default_')) return;
+          const link = links.find(l => l.id === id);
+          if (link && link.order !== i) {
+            batch.update(db.collection(COLLECTION).doc(id), { order: i });
+            link.order = i;
+            changed = true;
+          }
+        });
+        if (changed) {
+          try {
+            await batch.commit();
+            notify('Đã lưu thứ tự mới!', 'success');
+          } catch (e) {
+            notify('Lỗi lưu thứ tự: ' + e.message, 'error');
+          }
+        }
+      }
+    });
   }
 
   function escHtml(str) {
