@@ -650,8 +650,13 @@
     return `rgba(${r},${g},${b},0.08)`;
   }
 
+  function fixUrl(url) {
+    if (!url) return url;
+    if (!/^https?:\/\//i.test(url)) return 'https://' + url;
+    return url;
+  }
   function getDomain(url) {
-    try { return new URL(url).hostname; } catch { return url; }
+    try { return new URL(fixUrl(url)).hostname; } catch { return url; }
   }
 
   // --- Bộ icon SVG (line, đồng nhất) ---
@@ -737,7 +742,7 @@
     document.getElementById('noResults').style.display = 'none';
 
     grid.innerHTML = filtered.map(l => `
-      <a class="card" href="${escHtml(l.url)}" target="_blank" rel="noopener"
+      <a class="card" href="${escHtml(fixUrl(l.url))}" target="_blank" rel="noopener"
          style="--card-accent:${l.color}; --icon-bg:${getLightBg(l.color)};">
         <div class="card-icon">${iconSvg(l.icon)}</div>
         <div class="card-info">
@@ -878,7 +883,7 @@
     const id = document.getElementById('linkEditId').value;
     const data = {
       name: document.getElementById('linkName').value.trim(),
-      url: document.getElementById('linkUrl').value.trim(),
+      url: fixUrl(document.getElementById('linkUrl').value.trim()),
       icon: document.getElementById('linkIcon').value || 'link',
       category: document.getElementById('linkCategory').value,
       color: document.getElementById('linkColor').value
