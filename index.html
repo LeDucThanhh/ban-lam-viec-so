@@ -500,6 +500,7 @@
 
     /* Footer — dính chân trang */
     footer {
+      position: relative;
       background: linear-gradient(135deg, #D81B33 0%, #C8182A 100%);
       color: #fff;
       text-align: center;
@@ -507,7 +508,14 @@
       font-size: 14px;
       font-weight: 600;
       letter-spacing: 0.03em;
-      margin-top: auto;
+      margin-top: 3rem;
+    }
+    footer::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold-soft), var(--gold), var(--gold-soft));
     }
 
     @media (max-width: 700px) {
