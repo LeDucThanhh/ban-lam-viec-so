@@ -9,7 +9,60 @@
 </head>
 <body>
 
+<div class="tech-circuit" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="cGlow" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="3" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <g class="ct-static" fill="none" stroke="#1565C0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-20 120 H180 V240 H360"/>
+      <path d="M-20 300 H90 V420 H300 V360 H520"/>
+      <path d="M1460 200 H1260 V320 H1040"/>
+      <path d="M1460 470 H1320 V560 H1120 V500 H940"/>
+      <path d="M200 -20 V80 H120 V220"/>
+      <path d="M700 920 V800 H860 V680"/>
+      <path d="M1120 920 V820 H980 V720 H820"/>
+      <path d="M-20 650 H160 V730 H380 V810 H560"/>
+      <path d="M1460 710 H1280 V800 H1080"/>
+      <path d="M520 60 H700 V180 H900 V120 H1080"/>
+      <path d="M900 300 H1080 V430"/>
+      <path d="M300 500 H480 V610"/>
+    </g>
+    <g class="ct-node" fill="#1565C0">
+      <circle cx="180" cy="120" r="4"/><circle cx="360" cy="240" r="4"/>
+      <circle cx="300" cy="420" r="4"/><circle cx="1260" cy="200" r="4"/>
+      <circle cx="1040" cy="320" r="4"/><circle cx="120" cy="80" r="4"/>
+      <circle cx="860" cy="800" r="4"/><circle cx="980" cy="720" r="4"/>
+      <circle cx="700" cy="180" r="4"/><circle cx="1080" cy="430" r="4"/>
+      <circle cx="480" cy="610" r="4"/><circle cx="560" cy="810" r="4"/>
+    </g>
+    <g class="ct-flow" fill="none" stroke="#3FC8FF" stroke-width="2.5" stroke-linecap="round" filter="url(#cGlow)">
+      <path class="flow flow-1" d="M-20 300 H90 V420 H300 V360 H520"/>
+      <path class="flow flow-2" d="M520 60 H700 V180 H900 V120 H1080"/>
+      <path class="flow flow-3" d="M1460 470 H1320 V560 H1120 V500 H940"/>
+      <path class="flow flow-4" d="M-20 650 H160 V730 H380 V810 H560"/>
+      <path class="flow flow-5" d="M-20 120 H180 V240 H360"/>
+      <path class="flow flow-6" d="M1460 200 H1260 V320 H1040"/>
+      <path class="flow flow-7" d="M1120 920 V820 H980 V720 H820"/>
+      <path class="flow flow-8" d="M1460 710 H1280 V800 H1080"/>
+      <path class="flow flow-9" d="M900 300 H1080 V430"/>
+      <path class="flow flow-10" d="M200 -20 V80 H120 V220"/>
+    </g>
+  </svg>
+</div>
+
 <header>
+  <div class="header-glow" aria-hidden="true">
+    <span class="led led-1"></span>
+    <span class="led led-2"></span>
+    <span class="led led-3"></span>
+    <span class="led led-4"></span>
+    <span class="led led-5"></span>
+    <span class="header-sweep"></span>
+  </div>
   <div class="header-top">
     <div class="logo-mark">
       <img src="assets/logo-hatinh.png" alt="Logo tỉnh Hà Tĩnh">

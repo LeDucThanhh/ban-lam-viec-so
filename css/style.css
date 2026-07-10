@@ -13,13 +13,34 @@
   --accent:     #1565C0;
 }
 
+/* Vi mạch mờ + tia sáng LED chạy dọc mạch ở nền thân trang */
+.tech-circuit { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.tech-circuit svg { width: 100%; height: 100%; }
+.tech-circuit .ct-static { opacity: 0.12; }
+.tech-circuit .ct-node { opacity: 0.16; }
+.tech-circuit .flow {
+  stroke-dasharray: 46 3000;
+  stroke-dashoffset: 3046;
+  animation: circuitFlow 5s linear infinite;
+}
+.tech-circuit .flow-2  { animation-delay: 1.4s; animation-duration: 5.6s; }
+.tech-circuit .flow-3  { animation-delay: 2.6s; animation-duration: 6.2s; }
+.tech-circuit .flow-4  { animation-delay: 3.7s; animation-duration: 5.2s; }
+.tech-circuit .flow-5  { animation-delay: 0.6s; animation-duration: 5.8s; }
+.tech-circuit .flow-6  { animation-delay: 2.0s; animation-duration: 5.4s; }
+.tech-circuit .flow-7  { animation-delay: 3.2s; animation-duration: 6.0s; }
+.tech-circuit .flow-8  { animation-delay: 4.4s; animation-duration: 5.0s; }
+.tech-circuit .flow-9  { animation-delay: 1.0s; animation-duration: 6.4s; }
+.tech-circuit .flow-10 { animation-delay: 3.0s; animation-duration: 5.5s; }
+@keyframes circuitFlow { to { stroke-dashoffset: 0; } }
+
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
   background:
-    radial-gradient(680px 480px at 3% 4%, rgba(21,101,192,0.07), transparent 58%),
-    radial-gradient(760px 540px at 99% 22%, rgba(46,123,224,0.06), transparent 55%),
-    radial-gradient(720px 620px at 50% 100%, rgba(21,101,192,0.05), transparent 60%),
-    var(--bg);
+    radial-gradient(720px 500px at 2% 2%, rgba(21,101,192,0.1), transparent 58%),
+    radial-gradient(820px 560px at 100% 14%, rgba(46,123,224,0.09), transparent 56%),
+    radial-gradient(760px 640px at 50% 102%, rgba(21,101,192,0.07), transparent 60%),
+    linear-gradient(180deg, #EDF3FB 0%, #E5EDF7 100%);
   background-attachment: fixed;
   color: var(--text);
   min-height: 100vh;
@@ -34,12 +55,40 @@ body {
 header {
   position: relative;
   background:
-    linear-gradient(90deg, rgba(6,22,55,0.55) 0%, rgba(6,22,55,0.28) 32%, rgba(6,22,55,0) 54%),
+    linear-gradient(90deg, rgba(4,16,42,0.6) 0%, rgba(4,16,42,0.3) 34%, rgba(4,16,42,0) 56%),
+    linear-gradient(180deg, rgba(4,16,42,0.12), rgba(4,16,42,0.22)),
     url('../assets/header-bg.jpg') right center / cover no-repeat,
-    #0D47A1;
-  padding: 1rem 2rem 0;
-  border-bottom: 1px solid rgba(21,101,192,0.10);
+    #0A1E44;
+  padding: 0.65rem 2rem 0;
 }
+
+/* Lớp hiệu ứng neon (đèn LED + vệt quét) */
+.header-glow { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.led {
+  position: absolute;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: #9FF1FF;
+  box-shadow: 0 0 12px 3px rgba(120,230,255,0.95), 0 0 30px 10px rgba(79,225,255,0.55);
+  animation: ledPulse 2.8s ease-in-out infinite;
+}
+.led-1 { top: 26%; left: 60%; animation-delay: 0s; }
+.led-2 { top: 66%; left: 12%; animation-delay: 0.7s; }
+.led-3 { top: 44%; left: 8%; animation-delay: 1.3s; }
+.led-4 { top: 70%; left: 88%; animation-delay: 1.9s; }
+.led-5 { top: 22%; left: 78%; animation-delay: 2.4s; }
+@keyframes ledPulse {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50%      { opacity: 1;   transform: scale(1.2); }
+}
+.header-sweep {
+  position: absolute;
+  top: -40%; bottom: -40%; left: -30%; width: 42%;
+  background: linear-gradient(100deg, transparent, rgba(127,235,255,0.1) 44%, rgba(255,255,255,0.06) 50%, rgba(127,235,255,0.1) 56%, transparent);
+  transform: rotate(9deg);
+  animation: headerSweep 9s ease-in-out infinite;
+}
+@keyframes headerSweep { 0%, 100% { left: -30%; } 50% { left: 88%; } }
 
 /* Nội dung header nằm trên lớp nền */
 .header-top,
@@ -54,12 +103,14 @@ header {
   margin: 0 auto;
 }
 .logo-mark {
+  position: relative;
+  z-index: 1;
   width: 82px; height: 82px;
   border-radius: 50%;
   background: #fff;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 4px 16px rgba(21,101,192,0.20), 0 0 0 3px var(--gold);
+  box-shadow: 0 0 0 3px var(--gold), 0 0 20px 5px rgba(127,235,255,0.55), 0 4px 16px rgba(0,0,0,0.3);
 }
 .logo-mark img { width: 70px; height: 70px; object-fit: contain; }
 
@@ -126,7 +177,7 @@ header {
 /* Ô tìm kiếm lớn */
 .hero-search {
   max-width: 720px;
-  margin: 1rem auto 0;
+  margin: 0.7rem auto 0;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -162,7 +213,7 @@ header {
   justify-content: center;
   gap: 6px;
   max-width: 760px;
-  margin: 0.65rem auto 0;
+  margin: 0.45rem auto 0;
   padding: 6px;
   background: #FFFFFF;
   border: 1px solid rgba(21,101,192,0.12);
