@@ -17,7 +17,7 @@ body {
   font-family: 'Segoe UI', Arial, sans-serif;
   background:
     linear-gradient(rgba(236,243,251,0.40), rgba(236,243,251,0.40)),
-    url('../assets/background%202.png') center / cover no-repeat,
+    url('../assets/background.png') center / cover no-repeat,
     linear-gradient(180deg, #EDF3FB 0%, #E5EDF7 100%);
   background-attachment: fixed;
   color: var(--text);
