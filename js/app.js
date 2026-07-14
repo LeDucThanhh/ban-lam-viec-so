@@ -462,6 +462,12 @@ function deleteLink(id) {
 }
 
 // --- Modal helpers ---
+function openQrModal() {
+  // Chỉ tải ảnh poster khi thực sự mở popup (không làm nặng lần tải trang đầu)
+  const img = document.querySelector('#qrModal .qr-img');
+  if (img && !img.getAttribute('src') && img.dataset.src) img.src = img.dataset.src;
+  document.getElementById('qrModal').classList.add('active');
+}
 function closeModal(id) {
   document.getElementById(id).classList.remove('active');
 }
