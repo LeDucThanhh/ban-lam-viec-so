@@ -31,7 +31,7 @@ body::before {
   pointer-events: none;
   background:
     linear-gradient(rgba(236,243,251,0.40), rgba(236,243,251,0.40)),
-    url('../assets/background.png') center / cover no-repeat;
+    url('../assets/background.jpg') center / cover no-repeat;
 }
 
 /* ============================================================
@@ -42,7 +42,7 @@ header {
   background:
     linear-gradient(90deg, rgba(4,14,38,0.62) 0%, rgba(4,14,38,0.4) 40%, rgba(4,14,38,0.14) 64%, rgba(4,14,38,0) 82%),
     linear-gradient(180deg, rgba(4,14,38,0.08), rgba(4,14,38,0.16)),
-    url('../assets/banner.png') right center / cover no-repeat,
+    url('../assets/banner.jpg') right center / cover no-repeat,
     #0A1E44;
   padding: 0.45rem 2rem 0;
 }
@@ -712,7 +712,7 @@ footer {
   overflow: hidden;
   background:
     linear-gradient(rgba(5,17,44,0.52), rgba(5,17,44,0.58)),
-    url('../assets/footer.png') center bottom / cover no-repeat,
+    url('../assets/footer.jpg') center bottom / cover no-repeat,
     var(--blue-deep);
   color: rgba(255,255,255,0.9);
   margin-top: 3rem;
