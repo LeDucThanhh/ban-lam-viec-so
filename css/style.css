@@ -31,7 +31,7 @@ body::before {
   pointer-events: none;
   background:
     linear-gradient(rgba(236,243,251,0.40), rgba(236,243,251,0.40)),
-    url('../assets/background.jpg') center / cover no-repeat;
+    url('../assets/backgroundweb.jpg') center / cover no-repeat;
 }
 
 /* ============================================================
@@ -448,6 +448,8 @@ main {
   animation: cardIn 0.45s ease-out forwards;
 }
 @keyframes cardIn { to { opacity: 1; } }
+/* Sau lần render đầu: card hiện ngay, không chạy lại animation khi thêm/sửa/xoá */
+.grid.ready .card { animation: none; opacity: 1; }
 /* Quầng sáng bám theo con trỏ */
 .card::after {
   content: '';
@@ -805,6 +807,12 @@ a.footer-line:hover svg { transform: scale(1.18); filter: drop-shadow(0 0 5px rg
    RESPONSIVE
    ============================================================ */
 @media (max-width: 700px) {
+  /* Mobile: dùng ảnh nền dọc (hợp màn điện thoại) thay ảnh ngang của desktop */
+  body::before {
+    background:
+      linear-gradient(rgba(236,243,251,0.40), rgba(236,243,251,0.40)),
+      url('../assets/background.jpg') center / cover no-repeat;
+  }
   header { padding: 1rem 1rem 0; }
   .header-top { flex-wrap: nowrap; gap: 10px; align-items: flex-start; }
   .logo-mark { width: 48px; height: 48px; }

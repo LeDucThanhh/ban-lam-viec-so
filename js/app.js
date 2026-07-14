@@ -101,6 +101,7 @@ function isTinh(l) {
   return l.category === 'TINH';
 }
 
+let cardsAnimatedOnce = false;
 function renderCards() {
   const query = document.getElementById('searchInput').value.toLowerCase().trim();
   const filter = currentFilter;
@@ -122,6 +123,11 @@ function renderCards() {
   const sectionTW = document.getElementById('sectionTW');
   const sectionTINH = document.getElementById('sectionTINH');
 
+  // Chỉ chạy animation fade lần render đầu; các lần cập nhật sau hiện ngay (đỡ "load lại")
+  const skipAnim = cardsAnimatedOnce;
+  cardsAnimatedOnce = true;
+  gridTW.classList.toggle('ready', skipAnim);
+  gridTINH.classList.toggle('ready', skipAnim);
   gridTW.innerHTML = tw.map(renderCardHtml).join('');
   gridTINH.innerHTML = tinh.map(renderCardHtml).join('');
 
@@ -166,14 +172,19 @@ function setCount(el, target, suffix) {
   }
 }
 
-// --- Quầng sáng bám theo con trỏ trên thẻ ---
+// --- Quầng sáng bám theo con trỏ trên thẻ (throttle 1 lần/khung hình) ---
+let glowRaf = 0;
 document.addEventListener('mousemove', (e) => {
   const card = e.target.closest && e.target.closest('.card');
-  if (!card) return;
-  const r = card.getBoundingClientRect();
-  card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
-  card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
-});
+  if (!card || glowRaf) return;
+  const { clientX, clientY } = e;
+  glowRaf = requestAnimationFrame(() => {
+    glowRaf = 0;
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', ((clientX - r.left) / r.width * 100).toFixed(1) + '%');
+    card.style.setProperty('--my', ((clientY - r.top) / r.height * 100).toFixed(1) + '%');
+  });
+}, { passive: true });
 
 // --- Tab lọc TW / Tỉnh ---
 function setFilter(btn) {
@@ -315,17 +326,39 @@ function previewLogo(input) {
   const file = input.files[0];
   if (!file) return;
   const preview = document.getElementById('logoPreview');
-  preview.src = URL.createObjectURL(file);
+  const objUrl = URL.createObjectURL(file);
+  preview.onload = () => URL.revokeObjectURL(objUrl);
+  preview.src = objUrl;
   preview.classList.add('show');
 }
+// Nén logo về tối đa 256px trước khi upload (giữ trong suốt) — giảm mạnh dung lượng, upload nhanh
+async function compressLogo(file) {
+  if (!file.type || file.type === 'image/svg+xml') return file; // SVG giữ nguyên
+  try {
+    const img = await new Promise((res, rej) => {
+      const i = new Image();
+      i.onload = () => res(i);
+      i.onerror = rej;
+      i.src = URL.createObjectURL(file);
+    });
+    const max = 256;
+    const scale = Math.min(1, max / Math.max(img.width, img.height));
+    const w = Math.max(1, Math.round(img.width * scale));
+    const h = Math.max(1, Math.round(img.height * scale));
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    URL.revokeObjectURL(img.src);
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+    return blob || file;
+  } catch { return file; }
+}
+
 async function uploadLogo(file) {
-  const ext = file.name.split('.').pop();
-  const ref = storage.ref('logos/' + Date.now() + '.' + ext);
-  showLoading();
-  await ref.put(file);
-  const url = await ref.getDownloadURL();
-  hideLoading();
-  return url;
+  const blob = await compressLogo(file);
+  const ref = storage.ref('logos/' + Date.now() + '.png');
+  await ref.put(blob);
+  return await ref.getDownloadURL();
 }
 
 // --- CRUD ---
@@ -395,30 +428,23 @@ async function saveLink() {
   // --- Hợp lệ → upload logo nếu admin chọn ảnh mới ---
   const logoFile = document.getElementById('logoFile').files[0];
   let logoUrl = document.getElementById('linkLogoUrl').value;
-  if (logoFile) {
-    try {
-      logoUrl = await uploadLogo(logoFile);
-    } catch (e) {
-      notify('Lỗi upload logo: ' + e.message, 'error');
-      return;
-    }
-  }
 
-  const data = { name, url, logoUrl: logoUrl || '', category };
-
+  showLoading();
   try {
+    if (logoFile) logoUrl = await uploadLogo(logoFile);
+    const data = { name, url, logoUrl: logoUrl || '', category };
     if (id) {
       await db.collection(COLLECTION).doc(id).update(data);
-      closeModal('linkModal');
-      notify('Đã cập nhật liên kết!', 'success');
     } else {
-      data.order = links.length;
+      data.order = links.reduce((m, l) => Math.max(m, l.order ?? 0), -1) + 1;
       await db.collection(COLLECTION).add(data);
-      closeModal('linkModal');
-      notify('Đã thêm liên kết mới!', 'success');
     }
+    closeModal('linkModal');
+    notify(id ? 'Đã cập nhật liên kết!' : 'Đã thêm liên kết mới!', 'success');
   } catch (e) {
     notify('Lỗi: ' + e.message, 'error');
+  } finally {
+    hideLoading();
   }
 }
 
