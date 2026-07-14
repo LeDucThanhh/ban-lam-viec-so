@@ -15,16 +15,23 @@
 
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
-  background:
-    linear-gradient(rgba(236,243,251,0.40), rgba(236,243,251,0.40)),
-    url('../assets/background.png') center / cover no-repeat,
-    linear-gradient(180deg, #EDF3FB 0%, #E5EDF7 100%);
-  background-attachment: fixed;
+  background: linear-gradient(180deg, #EDF3FB 0%, #E5EDF7 100%);
   color: var(--text);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   position: relative;
+}
+/* Nền ảnh cố định (position:fixed thay cho background-attachment:fixed để không lỗi zoom trên mobile) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(236,243,251,0.40), rgba(236,243,251,0.40)),
+    url('../assets/background.png') center / cover no-repeat;
 }
 
 /* ============================================================
@@ -806,9 +813,9 @@ a.footer-line:hover svg { transform: scale(1.18); filter: drop-shadow(0 0 5px rg
   .header-actions { order: 0; margin-left: 0; align-self: center; }
   .btn-admin { padding: 9px; gap: 0; font-size: 0; }
   .btn-admin svg { width: 18px; height: 18px; }
-  .hero-search { height: 42px; margin-top: 1rem; padding: 0 14px; gap: 8px; }
-  .hero-search input { font-size: 13.5px; }
-  .hero-search-icon { width: 18px; height: 18px; }
+  .hero-search { height: 38px; margin-top: 0.6rem; padding: 0 12px; gap: 7px; }
+  .hero-search input { font-size: 12.5px; }
+  .hero-search-icon { width: 16px; height: 16px; }
   .filter-tabs { flex-wrap: wrap; border-radius: 16px; transform: translateY(40%); }
   .filter-tab { font-size: 12.5px; padding: 8px 10px; }
   main { margin-top: 3.5rem; padding: 0 0.9rem; }
